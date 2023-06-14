@@ -63,7 +63,10 @@ local plugins = {
 	  	require("custom.configs.tabnine").tabnine()
 	  end,
 	  run = "./dl_binaries.sh",
-	}
+	},
+  {
+    "andweeb/presence.nvim"
+  }
 }
 
 return plugins
