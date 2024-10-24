@@ -11,7 +11,7 @@ return {
 		config = function()
 			require("mini.icons").setup({
 				extension = {
-					h = { glyph = "󰡱", hl = "MiniIconsCyan" },
+					h = { glyph = "", hl = "MiniIconsCyan" },
 				},
 			})
 		end,
@@ -24,4 +24,5 @@ return {
 			end, { noremap = true, silent = true, desc = "Toggle minifiles" })
 		end,
 	},
+	{},
 }
