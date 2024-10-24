@@ -24,5 +24,10 @@ return {
 			end, { noremap = true, silent = true, desc = "Toggle minifiles" })
 		end,
 	},
-	{},
+	{
+		"echasnovski/mini.surround",
+		config = function()
+			require("mini.surround").setup()
+		end,
+	},
 }

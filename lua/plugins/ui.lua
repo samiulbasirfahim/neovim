@@ -1,4 +1,5 @@
 return {
+	---@type LazyPluginSpec
 	{
 		"sainnhe/gruvbox-material",
 		priority = 1000,
