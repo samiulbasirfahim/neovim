@@ -35,30 +35,9 @@ return {
 
             local servers = { "rust_analyzer", "clangd", "ts_ls", "lua_ls" }
 
-            local lsp_formatting = function(bufnr)
-                vim.lsp.buf.format({
-                    filter = function(client)
-                        return client.name == "null-ls"
-                    end,
-                    bufnr = bufnr,
-                })
-            end
-
-            local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
             local M = {}
 
             M.on_attach = function(client, bufnr)
-                if client.supports_method("textDocument/formatting") then
-                    vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-                    vim.api.nvim_create_autocmd("BufWritePre", {
-                        group = augroup,
-                        buffer = bufnr,
-                        callback = function()
-                            lsp_formatting(bufnr)
-                        end,
-                    })
-                end
                 if vim.fn.has("nvim-0.10") == 1 then
                     print("Lsp server connected")
                     vim.lsp.inlay_hint.enable()

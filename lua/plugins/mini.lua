@@ -50,7 +50,7 @@ return {
     ---@type LazyPluginSpec
     {
         "echasnovski/mini.pick",
-        dependencies = { "echasnovski/mini.extra" },
+        dependencies = { "echasnovski/mini.extra", "echasnovski/mini.fuzzy" },
         config = function()
             local minipick = require("mini.pick")
             local miniextra = require("mini.extra")
@@ -58,6 +58,7 @@ return {
             local builtin = minipick.builtin
 
             miniextra.setup()
+            require("mini.fuzzy").setup()
 
             minipick.setup({
                 mappings = {
@@ -143,6 +144,20 @@ return {
             for _, keymap in ipairs(keymaps) do
                 map(keymap.mode, keymap.key, keymap.action, keymap.desc)
             end
+        end,
+    },
+    {
+        "echasnovski/mini.indentscope",
+        config = function()
+            require("mini.indentscope").setup({
+                draw = {
+                    delay = 0,
+                    animation = function()
+                        return 0
+                    end,
+                },
+                options = { try_as_border = true, border = "both", indent_at_cursor = true },
+            })
         end,
     },
 }
