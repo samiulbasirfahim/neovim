@@ -21,7 +21,7 @@ vim.o.softtabstop = 4
 
 vim.o.clipboard = "unnamedplus"
 vim.o.autoread = true
-vim.o.mouse = ""
+vim.o.mouse = "a"
 vim.o.hlsearch = true
 vim.o.incsearch = true
 vim.o.ignorecase = true

@@ -34,9 +34,13 @@ return {
                 windows = {
                     max_number = math.huge,
                     preview = false,
-                    width_focus = 30,
+                    width_focus = 20,
                     width_nofocus = 20,
-                    width_preview = 25,
+                    width_preview = 20,
+                },
+                mappings = {
+                    mark_goto = "@",
+                    reveal_cwd = "'",
                 },
             })
         end,
@@ -56,6 +60,8 @@ return {
             local miniextra = require("mini.extra")
             -- local minivisits = require("mini.visits")
             local builtin = minipick.builtin
+
+            vim.ui.select = minipick.ui_select
 
             miniextra.setup()
             require("mini.fuzzy").setup()
@@ -87,7 +93,7 @@ return {
                 },
                 {
                     mode = "n",
-                    key = "<leader>fl",
+                    key = "<leader>fg",
                     action = function()
                         builtin.grep_live()
                     end,
@@ -129,6 +135,14 @@ return {
 
                 {
                     mode = "n",
+                    key = "<leader>fe",
+                    action = function()
+                        miniextra.pickers.explorer()
+                    end,
+                    desc = "[E]xplorer",
+                },
+                {
+                    mode = "n",
                     key = "<leader>fc",
                     action = function()
                         miniextra.pickers.git_commits()
@@ -158,6 +172,12 @@ return {
                 },
                 options = { try_as_border = true, border = "both", indent_at_cursor = true },
             })
+        end,
+    },
+    {
+        "echasnovski/mini.comment",
+        config = function()
+            require("mini.comment").setup()
         end,
     },
 }
