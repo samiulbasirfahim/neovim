@@ -122,13 +122,6 @@ return {
             })
 
             local keymaps = {
-
-                {
-                    key = "<leader>l",
-                    action = function() end,
-                    mode = "n",
-                    desc = "Lsp",
-                },
                 {
                     key = "<leader>lf",
                     action = function()

@@ -43,15 +43,12 @@ return {
             "echasnovski/mini.icons",
         },
         config = function()
-            vim.o.timeout = true
-            vim.o.timeoutlen = 300
-
             local wk = require("which-key")
             wk.setup({
                 win = {
                     border = "single",
                 },
             })
-        end
+        end,
     },
 }

@@ -110,4 +110,10 @@ return {
             },
         },
     },
+    {
+        "lostl1ght/lazygit.nvim",
+        lazy = true,
+        cmd = "Lazygit",
+        keys = { { "<leader>g", "<cmd>Lazygit<cr>", desc = "Git" } },
+    },
 }
