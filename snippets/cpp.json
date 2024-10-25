@@ -1,0 +1,1 @@
+{"cmp":{"prefix":"cmp","body":["\/*"," * (codeforces, leetcode): samiulbasirfahim"," * codechef: samiulbsrfahim"," * date: $CURRENT_DATE-$CURRENT_MONTH-$CURRENT_YEAR","*\/","","#include <iostream>","using namespace std;","","void solve() {}","","int main(void) {","\tint n;","\tcin >> n;","\twhile (n--)","\t\tsolve();","}"]}}

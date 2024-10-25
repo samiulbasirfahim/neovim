@@ -4,6 +4,9 @@ local function map(mode, keys, action, desc)
     vim.keymap.set(mode, keys, action, opts)
 end
 
+
+map('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
 map("i", "<C-h>", "<Left>")
 map("i", "<C-j>", "<Down>")
 map("i", "<C-k>", "<Up>")
