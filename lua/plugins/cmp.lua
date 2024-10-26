@@ -139,7 +139,7 @@ return {
 
                     local kind = lspkind.cmp_format({
                         mode = "symbol",
-                        maxwidth = 30,
+                        maxwidth = 35,
                     })(entry, item)
 
                     kind.menu = string.format("[%s]", menu_name)

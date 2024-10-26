@@ -4,40 +4,38 @@ return {
         "neovim/nvim-lspconfig",
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
-            ---@type LazyPluginSpec
-            {
-                "nvimtools/none-ls.nvim",
-                dependencies = "nvim-lua/plenary.nvim",
-                config = function()
-                    local null_ls = require("null-ls")
-                    null_ls.setup({
-                        sources = {
-                            -- Formatter
-                            null_ls.builtins.formatting.stylua,
-                            null_ls.builtins.formatting.prettier,
-                            null_ls.builtins.formatting.shfmt,
-
-                            null_ls.builtins.formatting.clang_format.with({
-                                extra_args = { "-style=", '"{IndentWidth: 4}"' },
-                            }),
-
-                            -- Code actions
-                            -- Diagnostic
-                            null_ls.builtins.diagnostics.cppcheck,
-                        },
-                    })
-                end,
-            },
+            "nvimtools/none-ls.nvim",
+            "nvim-lua/plenary.nvim",
         },
-
         config = function()
             local lspconfig = require("lspconfig")
-
             local servers = { "rust_analyzer", "clangd", "ts_ls", "lua_ls" }
+            local null_ls = require("null-ls")
+
+            null_ls.setup({
+                sources = {
+                    -- Formatter
+                    null_ls.builtins.formatting.stylua,
+                    null_ls.builtins.formatting.prettier,
+                    null_ls.builtins.formatting.shfmt,
+
+                    null_ls.builtins.formatting.clang_format.with({
+                        filetypes = { "c", "cpp", "cc", "hpp", "h" },
+                        extra_args = {
+                            "-style={ BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Always, AccessModifierOffset: -4, ColumnLimit: 0, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: false, AfterControlStatement: false, AfterEnum: false, AfterFunction: false, AfterNamespace: false, AfterObjCDeclaration: false, AfterStruct: false, AfterUnion: false, BeforeCatch: true, BeforeElse: true, IndentBraces: false}, ConstructorInitializerAllOnOneLineOrOnePerLine: false, ConstructorInitializerIndentWidth: 4, IndentCaseLabels: false, MaxEmptyLinesToKeep: 1, PointerAlignment: Left, ReflowComments: false, SortIncludes: false, NamespaceIndentation: All, ContinuationIndentWidth: 4, AllowAllArgumentsOnNextLine: false, AllowAllParametersOfDeclarationOnNextLine: false, AllowShortBlocksOnASingleLine: false, AllowShortCaseLabelsOnASingleLine: false, AllowShortFunctionsOnASingleLine: Empty, AllowShortIfStatementsOnASingleLine: false, AllowShortLoopsOnASingleLine: false, AlwaysBreakTemplateDeclarations: true, BreakConstructorInitializersBeforeComma: true, BinPackArguments: true, BinPackParameters: true}",
+                        },
+                    }),
+
+                    null_ls.builtins.diagnostics.cppcheck,
+                },
+            })
 
             local M = {}
 
             M.on_attach = function(client, bufnr)
+                if client.name == "clangd" then
+                    client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
+                end
                 if vim.fn.has("nvim-0.10") == 1 then
                     print("Lsp server connected")
                     vim.lsp.inlay_hint.enable()
@@ -224,7 +222,4 @@ return {
             vim.cmd([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]])
         end,
     },
-
-    ---@type LazyPluginSpec
-    {},
 }

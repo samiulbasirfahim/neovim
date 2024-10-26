@@ -18,6 +18,13 @@ return {
                 "<Plug>(cokeline-focus-next)",
                 { noremap = true, silent = true, desc = "Next buffer" }
             )
+
+            vim.keymap.set(
+                "n",
+                "<leader>x",
+                ":bdelete<CR>",
+                { noremap = true, silent = true, desc = "Kill buffer" }
+            )
         end,
     },
     {

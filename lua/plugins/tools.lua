@@ -24,6 +24,15 @@ return {
     {
         "CRAG666/code_runner.nvim",
         event = "BufReadPre",
+        keys = {
+            {
+
+                "<leader>r",
+                ":RunCode<CR>",
+                "n",
+                desc = "Run code",
+            },
+        },
         config = function()
             local code_runner = require("code_runner")
             code_runner.setup({
@@ -49,6 +58,8 @@ return {
         config = function()
             local alpha = require("alpha")
             local dashboard = require("alpha.themes.startify")
+
+            vim.keymap.set("n", "<leader>a", ":Alpha<CR>", { noremap = true, silent = true, desc = "Open dashboard" })
 
             dashboard.section.header.val = {
                 [[                                                                       ]],
@@ -115,5 +126,23 @@ return {
         lazy = true,
         cmd = "Lazygit",
         keys = { { "<leader>g", "<cmd>Lazygit<cr>", desc = "Git" } },
+    },
+    {
+        "willothy/flatten.nvim",
+        config = function()
+            require("flatten").setup({
+                window = { open = "smart" },
+                callbacks = {
+                    pre_open = vim.schedule_wrap(function()
+                        require("lazygit").hide()
+                    end),
+                    block_end = vim.schedule_wrap(function()
+                        require("lazygit").show()
+                    end),
+                },
+            })
+        end,
+        lazy = false,
+        priority = 1001,
     },
 }
