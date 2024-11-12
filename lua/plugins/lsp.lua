@@ -9,7 +9,7 @@ return {
         },
         config = function()
             local lspconfig = require("lspconfig")
-            local servers = { "rust_analyzer", "clangd", "ts_ls", "lua_ls" }
+            local servers = { "rust_analyzer", "clangd", "ts_ls", "lua_ls", "bashls" }
             local null_ls = require("null-ls")
 
             null_ls.setup({
@@ -37,7 +37,7 @@ return {
                     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
                 end
                 if vim.fn.has("nvim-0.10") == 1 then
-                    print("Lsp server connected")
+                    print("Connected to: " .. client.name)
                     vim.lsp.inlay_hint.enable()
                 end
             end
@@ -98,7 +98,8 @@ return {
                 },
             })
 
-            local signs = { Error = "✘", Warn = "󱡃", Hint = "󱐮", Info = "󱓔" }
+            -- local signs = { Error = "✘", Warn = "󱡃", Hint = "󱐮", Info = "󱓔" }
+            local signs = { Error = ">>", Warn = ">>", Hint = ">>", Info = ">>" }
 
             for type, icon in pairs(signs) do
                 local hl = "DiagnosticSign" .. type

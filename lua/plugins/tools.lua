@@ -62,18 +62,9 @@ return {
             vim.keymap.set("n", "<leader>a", ":Alpha<CR>", { noremap = true, silent = true, desc = "Open dashboard" })
 
             dashboard.section.header.val = {
-                [[                                                                       ]],
-                [[                                                                     ]],
-                [[       ████ ██████           █████      ██                     ]],
-                [[      ███████████             █████                             ]],
-                [[      █████████ ███████████████████ ███   ███████████   ]],
-                [[     █████████  ███    █████████████ █████ ██████████████   ]],
-                [[    █████████ ██████████ █████████ █████ █████ ████ █████   ]],
-                [[  ███████████ ███    ███ █████████ █████ █████ ████ █████  ]],
-                [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
-                [[                                                                       ]],
+                "",
             }
-            dashboard.section.mru.val = {}
+            -- dashboard.section.mru.val = {}
 
             alpha.setup(dashboard.opts)
         end,
@@ -145,4 +136,14 @@ return {
         lazy = false,
         priority = 1001,
     },
+    {
+        "IogaMaster/neocord",
+        event = "VeryLazy",
+        config = function()
+            require("neocord").setup()
+        end,
+    },
 }
+
+
+

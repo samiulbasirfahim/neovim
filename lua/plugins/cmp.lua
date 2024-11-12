@@ -69,6 +69,21 @@ return {
         local lspkind = require("lspkind")
         local luasnip = require("luasnip")
 
+        vim.g.cmptoggle = true
+
+        cmp.setup({
+            enabled = function()
+                return vim.g.cmptoggle
+            end,
+        })
+
+        vim.keymap.set(
+            "n",
+            "<leader>lc",
+            "<cmd>lua vim.g.cmptoggle = not vim.g.cmptoggle<CR>",
+            { desc = "toggle nvim-cmp" }
+        )
+
         cmp.setup({
             snippet = {
                 expand = function(args)
@@ -84,8 +99,8 @@ return {
             }),
 
             mapping = cmp.mapping.preset.insert({
-                ["<C-p>"] = cmp.mapping.select_prev_item(),
-                ["<C-n>"] = cmp.mapping.select_next_item(),
+                ["<A-k>"] = cmp.mapping.select_prev_item(),
+                ["<A-j>"] = cmp.mapping.select_next_item(),
                 ["<C-k>"] = cmp.mapping.select_prev_item(),
                 ["<C-j>"] = cmp.mapping.select_next_item(),
                 ["<C-d>"] = cmp.mapping.scroll_docs(-4),

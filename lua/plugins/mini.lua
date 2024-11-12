@@ -12,6 +12,7 @@ return {
             require("mini.icons").setup({
                 extension = {
                     h = { glyph = "", hl = "MiniIconsCyan" },
+                    norg = { glyph = "", hl = "MiniIconsCyan" },
                 },
             })
         end,
@@ -79,7 +80,7 @@ return {
                     mode = "n",
                     key = "<leader>ff",
                     action = function()
-                        builtin.files()
+                        builtin.files({ tool = "rg" })
                     end,
                     desc = "Find [f]iles",
                 },
@@ -95,7 +96,7 @@ return {
                     mode = "n",
                     key = "<leader>fg",
                     action = function()
-                        builtin.grep_live()
+                        builtin.grep_live({ tool = "rg" })
                     end,
                     desc = "Live [g]rep",
                 },
@@ -119,11 +120,90 @@ return {
                     mode = "n",
                     key = "<leader>fw",
                     action = function()
-                        miniextra.pickers.buf_lines({ scope = "current" })
+                        miniextra.pickers.buf_lines()
                     end,
                     desc = "Find [w]ord",
                 },
 
+                {
+                    mode = "n",
+                    key = "<leader>fk",
+                    action = function()
+                        miniextra.pickers.keymaps()
+                    end,
+                    desc = "[K]eymaps",
+                },
+
+                {
+                    mode = "n",
+                    key = "<leader>fld",
+                    action = function()
+                        miniextra.pickers.lsp({ scope = "declaration" })
+                    end,
+                    desc = "[D]eclaration",
+                },
+
+                {
+                    mode = "n",
+                    key = "<leader>flr",
+                    action = function()
+                        miniextra.pickers.lsp({ scope = "references" })
+                    end,
+                    desc = "[R]eferences",
+                },
+
+                {
+                    mode = "n",
+                    key = "<leader>fli",
+                    action = function()
+                        miniextra.pickers.lsp({ scope = "implementation" })
+                    end,
+                    desc = "[I]mplementation",
+                },
+
+                {
+                    mode = "n",
+                    key = "<leader>fls",
+                    action = function()
+                        miniextra.pickers.lsp({ scope = "document_symbol" })
+                    end,
+                    desc = "[S]symbol",
+                },
+
+                {
+                    mode = "n",
+                    key = "<leader>flt",
+                    action = function()
+                        miniextra.pickers.lsp({ scope = "type_definition" })
+                    end,
+                    desc = "[T]ype definition",
+                },
+
+                {
+                    mode = "n",
+                    key = "<leader>flw",
+                    action = function()
+                        miniextra.pickers.lsp({ scope = "workspace_symbol" })
+                    end,
+                    desc = "[W]orkspace symbol",
+                },
+
+                {
+                    mode = "n",
+                    key = "<leader>flD",
+                    action = function()
+                        miniextra.pickers.lsp({ scope = "definition" })
+                    end,
+                    desc = "[D]efinition",
+                },
+                {
+                    mode = "n",
+                    key = "<leader>fd",
+                    action = function()
+                        miniextra.pickers.diagnostic()
+                    end,
+                    desc = "[D]iagnostics",
+                },
                 {
                     mode = "n",
                     key = "<leader>fo",

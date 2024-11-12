@@ -44,3 +44,6 @@ vim.g.maplocalleader = " "
 vim.o.hlsearch = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
+
+
+vim.g.neovide_transparency = 0.8
