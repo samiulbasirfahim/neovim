@@ -6,15 +6,18 @@ return {
             "hrsh7th/cmp-nvim-lsp",
             "nvimtools/none-ls.nvim",
             "nvim-lua/plenary.nvim",
+            {
+                "williamboman/mason-lspconfig.nvim",
+                "jay-babu/mason-null-ls.nvim",
+                dependencies = "williamboman/mason.nvim",
+            },
         },
         config = function()
             local lspconfig = require("lspconfig")
-            local servers = { "rust_analyzer", "clangd", "ts_ls", "lua_ls", "bashls" }
             local null_ls = require("null-ls")
 
-            null_ls.setup({
+            require("null-ls").setup({
                 sources = {
-                    -- Formatter
                     null_ls.builtins.formatting.stylua,
                     null_ls.builtins.formatting.prettier,
                     null_ls.builtins.formatting.shfmt,
@@ -28,6 +31,10 @@ return {
 
                     null_ls.builtins.diagnostics.cppcheck,
                 },
+            })
+            require("mason-null-ls").setup({
+                ensure_installed = nil,
+                automatic_installation = true,
             })
 
             local M = {}
@@ -45,40 +52,22 @@ return {
             M.capabilities = vim.lsp.protocol.make_client_capabilities()
             M.capabilities = require("cmp_nvim_lsp").default_capabilities(M.capabilities)
 
-            for _, server in ipairs(servers) do
-                lspconfig[server].setup({
-                    on_attach = M.on_attach,
-                    capabilities = M.capabilities,
-                })
-            end
-
-            lspconfig.ts_ls.setup({
-                settings = {
-                    typescript = {
-                        inlayHints = {
-                            includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
-                            includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                            includeInlayVariableTypeHints = true,
-                            includeInlayFunctionParameterTypeHints = true,
-                            includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-                            includeInlayPropertyDeclarationTypeHints = true,
-                            includeInlayFunctionLikeReturnTypeHints = true,
-                            includeInlayEnumMemberValueHints = true,
-                        },
-                    },
-                    javascript = {
-                        inlayHints = {
-                            includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
-                            includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                            includeInlayVariableTypeHints = true,
-                            includeInlayFunctionParameterTypeHints = true,
-                            includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-                            includeInlayPropertyDeclarationTypeHints = true,
-                            includeInlayFunctionLikeReturnTypeHints = true,
-                            includeInlayEnumMemberValueHints = true,
-                        },
-                    },
+            require("mason").setup({})
+            require("mason-lspconfig").setup({
+                automatic_installation = true,
+                ensure_installed = {
+                    "lua_ls",
+                    "clangd",
                 },
+            })
+
+            require("mason-lspconfig").setup_handlers({
+                function(server)
+                    lspconfig[server].setup({
+                        on_attach = M.on_attach,
+                        capabilities = M.capabilities,
+                    })
+                end,
             })
 
             lspconfig.lua_ls.setup({
@@ -99,7 +88,7 @@ return {
             })
 
             -- local signs = { Error = "✘", Warn = "󱡃", Hint = "󱐮", Info = "󱓔" }
-            local signs = { Error = ">>", Warn = ">>", Hint = ">>", Info = ">>" }
+            local signs = { Error = "✘", Warn = "󱡃", Hint = ">>", Info = ">>" }
 
             for type, icon in pairs(signs) do
                 local hl = "DiagnosticSign" .. type

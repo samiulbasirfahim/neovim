@@ -1,6 +1,21 @@
 return {
     ---@type LazyPluginSpec
     {
+
+        "rose-pine/neovim",
+        name = "rose-pine",
+        config = function()
+            require("rose-pine").setup({
+                styles = {
+                    transparency = true,
+                },
+            })
+
+            vim.cmd("colorscheme rose-pine-main")
+        end,
+    },
+    ---@type LazyPluginSpec
+    {
         "sainnhe/gruvbox-material",
         priority = 1000,
         config = function()
@@ -11,7 +26,7 @@ return {
             vim.cmd("let g:gruvbox_material_diagnostic_virtual_text='colored'")
             vim.cmd("let g:gruvbox_material_enable_bold=1")
             vim.cmd("let g:gruvbox_material_enable_italic=1")
-            vim.cmd([[colorscheme gruvbox-material]]) -- Set color scheme
+            -- vim.cmd([[colorscheme gruvbox-material]]) -- Set color scheme
 
             -- changing bg and border colors
             vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
