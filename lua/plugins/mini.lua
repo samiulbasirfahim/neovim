@@ -1,5 +1,12 @@
 return {
     {
+        "echasnovski/mini.tabline",
+        config = function()
+            require("mini.tabline").setup()
+        end,
+    },
+
+    {
         "echasnovski/mini.icons",
         init = function()
             package.preload["nvim-web-devicons"] = function()

@@ -18,31 +18,36 @@ return {
 
                     require("null-ls").setup({
                         sources = {
-                            null_ls.builtins.formatting.stylua,
-                            null_ls.builtins.formatting.prettier,
-                            null_ls.builtins.formatting.shfmt,
-                            null_ls.builtins.formatting.clang_format.with({
-                                filetypes = { "c", "cpp", "cc", "hpp", "h" },
-                                extra_args = {
-                                    "-style={ BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Always, AccessModifierOffset: -4, ColumnLimit: 0, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: false, AfterControlStatement: false, AfterEnum: false, AfterFunction: false, AfterNamespace: false, AfterObjCDeclaration: false, AfterStruct: false, AfterUnion: false, BeforeCatch: true, BeforeElse: true, IndentBraces: false}, ConstructorInitializerAllOnOneLineOrOnePerLine: false, ConstructorInitializerIndentWidth: 4, IndentCaseLabels: false, MaxEmptyLinesToKeep: 1, PointerAlignment: Left, ReflowComments: false, SortIncludes: false, NamespaceIndentation: All, ContinuationIndentWidth: 4, AllowAllArgumentsOnNextLine: false, AllowAllParametersOfDeclarationOnNextLine: false, AllowShortBlocksOnASingleLine: false, AllowShortCaseLabelsOnASingleLine: false, AllowShortFunctionsOnASingleLine: Empty, AllowShortIfStatementsOnASingleLine: false, AllowShortLoopsOnASingleLine: false, AlwaysBreakTemplateDeclarations: true, BreakConstructorInitializersBeforeComma: true, BinPackArguments: true, BinPackParameters: true}",
-                                },
-                            }),
                             null_ls.builtins.diagnostics.cppcheck,
                         },
                     })
+                    local mason = require("mason-null-ls")
                     require("mason-null-ls").setup({
-                        ensure_installed = nil,
-                        automatic_installation = true,
+                        ensure_installed = { "stylua", "clang-format", "shfmt" },
+                        automatic_installation = false,
+
+                        handlers = {
+                            mason.default_setup,
+
+                            clang_format = function()
+                                null_ls.register(null_ls.builtins.formatting.clang_format.with({
+                                    filetypes = { "c", "cpp", "cc", "hpp", "h" },
+                                    extra_args = {
+                                        "-style={ BasedOnStyle: Google, IndentWidth: 4, TabWidth: 4, UseTab: Always, AccessModifierOffset: -4, ColumnLimit: 0, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: false, AfterControlStatement: false, AfterEnum: false, AfterFunction: false, AfterNamespace: false, AfterObjCDeclaration: false, AfterStruct: false, AfterUnion: false, BeforeCatch: true, BeforeElse: true, IndentBraces: false}, ConstructorInitializerAllOnOneLineOrOnePerLine: false, ConstructorInitializerIndentWidth: 4, IndentCaseLabels: false, MaxEmptyLinesToKeep: 1, PointerAlignment: Left, ReflowComments: false, SortIncludes: false, NamespaceIndentation: All, ContinuationIndentWidth: 4, AllowAllArgumentsOnNextLine: false, AllowAllParametersOfDeclarationOnNextLine: false, AllowShortBlocksOnASingleLine: false, AllowShortCaseLabelsOnASingleLine: false, AllowShortFunctionsOnASingleLine: Empty, AllowShortIfStatementsOnASingleLine: false, AllowShortLoopsOnASingleLine: false, AlwaysBreakTemplateDeclarations: true, BreakConstructorInitializersBeforeComma: true, BinPackArguments: true, BinPackParameters: true}",
+                                    },
+                                }))
+                            end,
+                        },
                     })
-                end
-            }
+                end,
+            },
         },
         config = function()
             local lspconfig = require("lspconfig")
 
             local M = {}
 
-            M.on_attach = function(client, bufnr)
+            M.on_attach = function(client, _)
                 if client.name == "clangd" then
                     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
                 end
@@ -61,6 +66,9 @@ return {
                 ensure_installed = {
                     "lua_ls",
                     "clangd",
+                    "rust_analyzer",
+                    "bashls",
+                    "bashls",
                 },
             })
 

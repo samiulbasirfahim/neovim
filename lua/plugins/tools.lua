@@ -26,7 +26,6 @@ return {
         event = "BufReadPre",
         keys = {
             {
-
                 "<leader>r",
                 ":RunCode<CR>",
                 "n",
@@ -42,8 +41,8 @@ return {
                     python = "python3 -u",
                     typescript = "deno run",
                     rust = "cd $dir && cargo run",
-                    c = "cd $dir && mkdir -p .bin && cd .bin && gcc ../$fileName -o $fileName.exe && ./$fileName.exe",
-                    cpp = "cd $dir && mkdir -p .bin && cd .bin && g++ ../$fileName -o $fileName.exe && ./$fileName.exe",
+                    c = "cd $dir && mkdir -p .bin && cd .bin && gcc --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+                    cpp = "cd $dir && mkdir -p .bin && cd .bin && g++ --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
                 },
                 project = {},
             })
@@ -144,6 +143,3 @@ return {
         end,
     },
 }
-
-
-

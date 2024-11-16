@@ -8,6 +8,7 @@ vim.o.conceallevel = 0 -- For markdown like elements
 
 vim.o.title = false
 vim.o.showmode = false
+-- vim.o.showtabline = 2
 
 vim.o.splitbelow = true
 vim.o.splitright = true
@@ -28,6 +29,7 @@ vim.o.ignorecase = true
 vim.o.undofile = true
 vim.o.swapfile = false
 vim.o.cursorline = true
+vim.o.cursorcolumn = true
 
 vim.o.scrolloff = 999
 
