@@ -1,8 +1,121 @@
+local function confirm_discard_changes(all_buffers)
+    local buf_list = all_buffers == false and { 0 } or vim.api.nvim_list_bufs()
+    local unsaved = vim.tbl_filter(function(buf_id)
+        return vim.bo[buf_id].modified and vim.bo[buf_id].buflisted
+    end, buf_list)
+
+    if #unsaved == 0 then
+        return true
+    end
+
+    for _, buf_id in ipairs(unsaved) do
+        local name = vim.api.nvim_buf_get_name(buf_id)
+        local result = vim.fn.confirm(
+            string.format('Save changes to "%s"?', name ~= "" and vim.fn.fnamemodify(name, ":~:.") or "Untitled"),
+            "&Yes\n&No\n&Cancel",
+            1,
+            "Question"
+        )
+
+        if result == 1 then
+            if buf_id ~= 0 then
+                vim.cmd("buffer " .. buf_id)
+            end
+            vim.cmd("update")
+        elseif result == 0 or result == 3 then
+            return false
+        end
+    end
+
+    return true
+end
+
 return {
     {
         "echasnovski/mini.tabline",
         config = function()
             require("mini.tabline").setup()
+        end,
+    },
+    {
+        "echasnovski/mini.sessions",
+        config = function()
+            local MiniSessions = require("mini.sessions")
+            MiniSessions.setup({})
+            vim.keymap.set("n", "<leader>sd", function()
+                MiniSessions.select("delete")
+            end, { desc = "Delete session" })
+            vim.keymap.set("n", "<leader>ss", function()
+                MiniSessions.select()
+            end, { desc = "Select session" })
+            vim.keymap.set("n", "<leader>sw", function()
+                vim.ui.input({
+                    prompt = "Session Name: ",
+                    default = vim.v.this_session ~= "" and vim.v.this_session
+                        or vim.fn.fnamemodify(vim.fn.getcwd(), ":t"),
+                }, function(input)
+                    if input ~= nil then
+                        MiniSessions.write(input, { force = true })
+                    end
+                end)
+            end, { desc = "Save session" })
+            vim.keymap.set("n", "<leader>sx", function()
+                if confirm_discard_changes() then
+                    vim.v.this_session = ""
+                    vim.cmd("%bwipeout!")
+                end
+            end, { desc = "Clear current session" })
+        end,
+    },
+
+    {
+        "echasnovski/mini.starter",
+        dependencies = { "echasnovski/mini.sessions" },
+        config = function()
+            local header_art = [[
+	███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+	████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+	██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+	██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+	██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+	╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+]]
+
+            -- using the mini plugins
+            require("mini.sessions").setup({
+                -- Whether to read latest session if Neovim opened without file arguments
+                autoread = false,
+                -- Whether to write current session before quitting Neovim
+                autowrite = true,
+                -- Directory where global sessions are stored (use `''` to disable)
+                directory = vim.fn.stdpath("data") .. "/session", --<"session" subdir of user data directory from |stdpath()|>,
+                -- File for local session (use `''` to disable)
+                file = "",                            -- 'Session.vim',
+            })
+
+            local starter = require("mini.starter")
+            starter.setup({
+                -- evaluate_single = true,
+                items = {
+                    starter.sections.sessions(77, true),
+                    starter.sections.builtin_actions(),
+                },
+                content_hooks = {
+                    function(content)
+                        local blank_content_line = { { type = "empty", string = "" } }
+                        local section_coords = starter.content_coords(content, "section")
+                        -- Insert backwards to not affect coordinates
+                        for i = #section_coords, 1, -1 do
+                            table.insert(content, section_coords[i].line + 1, blank_content_line)
+                        end
+                        return content
+                    end,
+                    starter.gen_hook.adding_bullet("» "),
+                    starter.gen_hook.aligning("center", "center"),
+                },
+                header = header_art,
+                footer = "",
+            })
         end,
     },
 
@@ -27,31 +140,68 @@ return {
     {
         "echasnovski/mini.files",
         config = function()
-            require("mini.files").setup({
+            local MiniFiles = require("mini.files")
+            MiniFiles.setup({
                 use_as_default_explorer = true,
-                windows = {
-                    max_number = math.huge,
-                    preview = false,
-                    width_focus = 20,
-                    width_nofocus = 20,
-                    width_preview = 20,
-                },
                 mappings = {
-                    mark_goto = "@",
-                    reveal_cwd = "'",
+                    close = "q",
+                    go_in_plus = "l",
+                    go_out = "h",
+                    go_out_plus = "",
+                    reset = "<bs>",
+                    reveal_cwd = "@",
+                    show_help = "g?",
+                    synchronize = "<c-s>",
+                    trim_left = "<",
+                    trim_right = ">",
+                },
+                windows = {
+                    preview = true,
+                    width_focus = 25,
+                    width_preview = 30,
+                    width_nofocus = 15,
                 },
             })
 
+            local function dynamic_open(path)
+                MiniFiles.open(path, true, {})
+            end
+
             require(".utility").map({
+
                 {
-                    key = "<leader>e",
+                    key = "<leader>ee",
                     action = function()
-                        local _ = require("mini.files").close() or require("mini.files").open()
+                        if not MiniFiles.close() then
+                            MiniFiles.open()
+                        end
                     end,
                     mode = "n",
-                    desc = "[E]xplorer",
+                    desc = "[E]xplorer (working directory)",
+                },
+                {
+                    key = "<leader>ef",
+                    action = function()
+                        if not MiniFiles.close() then
+                            dynamic_open(vim.api.nvim_buf_get_name(0))
+                            MiniFiles.reveal_cwd()
+                        end
+                    end,
+                    mode = "n",
+                    desc = "[E]xplorer (current buffer)",
                 },
             })
+        end,
+    },
+    {
+        "echasnovski/mini.bufremove",
+        config = function()
+            require("mini.bufremove").setup({})
+            vim.keymap.set("n", "<leader>x", function()
+                if confirm_discard_changes(false) then
+                    require("mini.bufremove").delete(0, true)
+                end
+            end, { desc = "Close buffer" })
         end,
     },
     {

@@ -21,8 +21,6 @@ map("n", "<Tab>", "<cmd>bnext<CR>")
 map("n", "<s-Tab>", "<cmd>bprev<CR>")
 map("n", "<s-Tab>", "<cmd>bprev<CR>")
 
-map("n", "<leader>x", ":bdelete!<CR>",  "Kill buffer")
-
 map("n", "<A-k>", ":resize +2<CR>")
 map("n", "<A-j>", ":resize -2<CR>")
 map("n", "<A-h>", ":vertical resize +2<CR>")
