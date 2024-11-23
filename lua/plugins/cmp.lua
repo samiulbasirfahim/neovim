@@ -1,5 +1,7 @@
+---@type LazyPluginSpec
 return {
     "hrsh7th/nvim-cmp",
+    -- enabled = false,
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
         "hrsh7th/cmp-buffer", -- source for text in buffer
@@ -29,6 +31,7 @@ return {
             event = "InsertEnter",
             dependencies = {
                 "saadparwaiz1/cmp_luasnip",
+                -- "rafamadriz/friendly-snippets",
             },
             config = function()
                 local luasnip = require("luasnip")
@@ -38,6 +41,7 @@ return {
                 })
 
                 require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./snippets" } })
+                -- require("luasnip.loaders.from_vscode").lazy_load()
                 vim.api.nvim_create_autocmd("InsertLeave", {
                     callback = function()
                         if
@@ -69,20 +73,9 @@ return {
         local lspkind = require("lspkind")
         local luasnip = require("luasnip")
 
-        vim.g.cmptoggle = true
-
         cmp.setup({
-            enabled = function()
-                return vim.g.cmptoggle
-            end,
+            enabled = true,
         })
-
-        vim.keymap.set(
-            "n",
-            "<leader>lc",
-            "<cmd>lua vim.g.cmptoggle = not vim.g.cmptoggle<CR>",
-            { desc = "toggle nvim-cmp" }
-        )
 
         cmp.setup({
             snippet = {

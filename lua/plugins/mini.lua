@@ -24,35 +24,25 @@ return {
             })
         end,
     },
-    {
-        "echasnovski/mini.files",
-        keys = {
-            {
-                "<leader>e",
-                function()
-                    local _ = require("mini.files").close() or require("mini.files").open()
-                end,
-                mode = "n",
-                desc = "[E]xplorer",
-            },
-        },
-        config = function()
-            require("mini.files").setup({
-                use_as_default_explorer = true,
-                windows = {
-                    max_number = math.huge,
-                    preview = false,
-                    width_focus = 20,
-                    width_nofocus = 20,
-                    width_preview = 20,
-                },
-                mappings = {
-                    mark_goto = "@",
-                    reveal_cwd = "'",
-                },
-            })
-        end,
-    },
+    -- {
+    --     "echasnovski/mini.files",
+    --     config = function()
+    --         require("mini.files").setup({
+    --             use_as_default_explorer = true,
+    --             windows = {
+    --                 max_number = math.huge,
+    --                 preview = false,
+    --                 width_focus = 20,
+    --                 width_nofocus = 20,
+    --                 width_preview = 20,
+    --             },
+    --             mappings = {
+    --                 mark_goto = "@",
+    --                 reveal_cwd = "'",
+    --             },
+    --         })
+    --     end,
+    -- },
     {
         "echasnovski/mini.surround",
         config = function()

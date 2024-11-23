@@ -8,7 +8,37 @@ return {
                 ["core.defaults"] = {},
                 ["core.concealer"] = {
                     config = {
-                        icon_preset = "basic",
+                        icons = {
+                            heading = {
+                                icons = { "󰉫 ", "󰉬 ", "󰉭 ", "󰉮 ", "󰉯 ", "󰉰 " },
+                            },
+                            todo = {
+                                undone = {
+                                    icon = "X",
+                                },
+                                done = {
+                                    icon = "D",
+                                },
+                                urgent = {
+                                    icon = "I",
+                                },
+                                cancelled = {
+                                    icon = "C",
+                                },
+                                recurring = {
+                                    icon = "R",
+                                },
+                                uncertain = {
+                                    icon = "?",
+                                },
+                                on_hold = {
+                                    icon = "H",
+                                },
+                                pending = {
+                                    icon = "!",
+                                },
+                            },
+                        },
                     },
                 },
                 ["core.completion"] = {

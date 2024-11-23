@@ -25,7 +25,7 @@ return {
                         "watches",
                         "scopes",
                     },
-                    size = 80,
+                    size = 50,
                     position = "left",
                 },
                 {
@@ -33,7 +33,7 @@ return {
                         "breakpoints",
                         "console",
                     },
-                    size = 20,
+                    size = 10,
                     position = "bottom",
                 },
             },

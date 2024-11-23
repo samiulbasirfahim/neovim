@@ -41,8 +41,10 @@ return {
                     python = "python3 -u",
                     typescript = "deno run",
                     rust = "cd $dir && cargo run",
-                    c = "cd $dir && mkdir -p .bin && cd .bin && gcc --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
-                    cpp = "cd $dir && mkdir -p .bin && cd .bin && g++ --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+                    c =
+                    "cd $dir && mkdir -p .bin && cd .bin && gcc --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+                    cpp =
+                    "cd $dir && mkdir -p .bin && cd .bin && g++ --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
                 },
                 project = {},
             })
@@ -50,23 +52,6 @@ return {
     },
     {
         "mg979/vim-visual-multi",
-    },
-    {
-        "goolord/alpha-nvim",
-        dependencies = { "echasnovski/mini.icons" },
-        config = function()
-            local alpha = require("alpha")
-            local dashboard = require("alpha.themes.startify")
-
-            vim.keymap.set("n", "<leader>a", ":Alpha<CR>", { noremap = true, silent = true, desc = "Open dashboard" })
-
-            dashboard.section.header.val = {
-                "",
-            }
-            -- dashboard.section.mru.val = {}
-
-            alpha.setup(dashboard.opts)
-        end,
     },
     {
         "xeluxee/competitest.nvim",
