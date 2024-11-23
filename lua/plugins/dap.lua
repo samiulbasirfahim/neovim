@@ -49,7 +49,7 @@ return {
             dapui.close({})
         end
 
-        local keymaps = {
+        require(".utility").map({
             {
                 key = "<leader>dc",
                 action = function()
@@ -123,14 +123,6 @@ return {
                 mode = "n",
                 desc = "Toggle ui",
             },
-        }
-
-        local function map(mode, key, action, desc)
-            vim.keymap.set(mode, key, action, { noremap = true, silent = true, desc = desc })
-        end
-
-        for _, keymap in ipairs(keymaps) do
-            map(keymap.mode, keymap.key, keymap.action, keymap.desc)
-        end
+        })
     end,
 }

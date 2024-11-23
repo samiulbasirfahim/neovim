@@ -41,6 +41,17 @@ return {
                     reveal_cwd = "'",
                 },
             })
+
+            require(".utility").map({
+                {
+                    key = "<leader>e",
+                    action = function()
+                        local _ = require("mini.files").close() or require("mini.files").open()
+                    end,
+                    mode = "n",
+                    desc = "[E]xplorer",
+                },
+            })
         end,
     },
     {
@@ -72,7 +83,7 @@ return {
                 },
             })
 
-            local keymaps = {
+            require(".utility").map({
                 {
                     mode = "n",
                     key = "<leader>ff",
@@ -226,15 +237,7 @@ return {
                     end,
                     desc = "Git [c]ommits",
                 },
-            }
-
-            local function map(mode, key, action, desc)
-                vim.keymap.set(mode, key, action, { noremap = true, silent = true, desc = desc })
-            end
-
-            for _, keymap in ipairs(keymaps) do
-                map(keymap.mode, keymap.key, keymap.action, keymap.desc)
-            end
+            })
         end,
     },
     {
