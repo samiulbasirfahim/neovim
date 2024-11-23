@@ -138,62 +138,6 @@ return {
         end,
     },
     {
-        "echasnovski/mini.files",
-        config = function()
-            local MiniFiles = require("mini.files")
-            MiniFiles.setup({
-                use_as_default_explorer = true,
-                mappings = {
-                    close = "q",
-                    go_in_plus = "l",
-                    go_out = "h",
-                    go_out_plus = "",
-                    reset = "<bs>",
-                    reveal_cwd = "@",
-                    show_help = "g?",
-                    synchronize = "<c-s>",
-                    trim_left = "<",
-                    trim_right = ">",
-                },
-                windows = {
-                    preview = true,
-                    width_focus = 25,
-                    width_preview = 30,
-                    width_nofocus = 15,
-                },
-            })
-
-            local function dynamic_open(path)
-                MiniFiles.open(path, true, {})
-            end
-
-            require(".utility").map({
-
-                {
-                    key = "<leader>ee",
-                    action = function()
-                        if not MiniFiles.close() then
-                            MiniFiles.open()
-                        end
-                    end,
-                    mode = "n",
-                    desc = "[E]xplorer (working directory)",
-                },
-                {
-                    key = "<leader>ef",
-                    action = function()
-                        if not MiniFiles.close() then
-                            dynamic_open(vim.api.nvim_buf_get_name(0))
-                            MiniFiles.reveal_cwd()
-                        end
-                    end,
-                    mode = "n",
-                    desc = "[E]xplorer (current buffer)",
-                },
-            })
-        end,
-    },
-    {
         "echasnovski/mini.bufremove",
         config = function()
             require("mini.bufremove").setup({})
@@ -408,6 +352,154 @@ return {
         "echasnovski/mini.comment",
         config = function()
             require("mini.comment").setup()
+        end,
+    },
+    {
+        "echasnovski/mini.files",
+        config = function()
+            local MiniFiles = require("mini.files")
+            local show_dotfiles = false
+
+            local filter_show = function()
+                return true
+            end
+
+            local filter_hide = function(fs_entry)
+                return not vim.startswith(fs_entry.name, ".")
+            end
+
+            local toggle_dotfiles = function()
+                show_dotfiles = not show_dotfiles
+                local new_filter = show_dotfiles and filter_show or filter_hide
+                MiniFiles.refresh({ content = { filter = new_filter } })
+            end
+
+            local files_set_cwd = function()
+                local cur_entry_path = MiniFiles.get_fs_entry().path
+                local cur_directory = vim.fs.dirname(cur_entry_path)
+                if vim.fn.chdir(cur_directory) ~= "" then
+                    print("Current directory set to " .. cur_directory)
+                else
+                    print("Unable to set current directory")
+                end
+            end
+
+            local map_split = function(buf_id, lhs, direction)
+                local rhs = function()
+                    local fs_entry = MiniFiles.get_fs_entry()
+                    local is_at_file = fs_entry ~= nil and fs_entry.fs_type == "file"
+
+                    if is_at_file then
+                        local cur_target = MiniFiles.get_explorer_state().target_window
+                        local new_target = vim.api.nvim_win_call(cur_target, function()
+                            vim.cmd(direction .. " split")
+                            return vim.api.nvim_get_current_win()
+                        end)
+                        MiniFiles.set_target_window(new_target)
+                    end
+
+                    MiniFiles.go_in({})
+                end
+
+                local desc = "Split " .. direction
+                vim.keymap.set("n", lhs, rhs, { buffer = buf_id, desc = desc })
+            end
+
+            local open_terminal = function()
+                local path = vim.fn.fnamemodify(MiniFiles.get_fs_entry().path, ":h")
+                local term = require("toggleterm.terminal").Terminal:new({
+                    direction = "tab",
+                    dir = path,
+                    on_open = function(term)
+                        vim.keymap.set({ "n", "t" }, "<c-\\>", function()
+                            term:shutdown()
+                        end, { buffer = 0 })
+                    end,
+                })
+                term:toggle()
+            end
+
+            local yank_relative_path = function()
+                local path = vim.fn.fnamemodify(MiniFiles.get_fs_entry().path, ":.")
+                vim.fn.setreg(vim.v.register, path)
+                print("Yanked relative path " .. path)
+            end
+
+            local yank_full_path = function()
+                local path = MiniFiles.get_fs_entry().path
+                vim.fn.setreg(vim.v.register, path)
+                print("Yanked full path " .. path)
+            end
+
+            local minifiles_triggers = vim.api.nvim_create_augroup("MiniFilesMappings", { clear = true })
+
+            vim.api.nvim_create_autocmd("User", {
+                group = minifiles_triggers,
+                pattern = "MiniFilesBufferCreate",
+                callback = function(args)
+                    local buf_id = args.data.buf_id
+                    map_split(buf_id, "gs", "horizontal")
+                    map_split(buf_id, "gv", "vertical")
+                    vim.keymap.set("n", "-", function()
+                        MiniFiles.go_out()
+                    end, { buffer = buf_id, desc = "Go out of directory" })
+                    vim.keymap.set("n", "<c-\\>", open_terminal, { buffer = buf_id, desc = "Open folder in terminal" })
+                    vim.keymap.set("n", "<cr>", function()
+                        local fs_entry = MiniFiles.get_fs_entry()
+                        local is_at_file = fs_entry ~= nil and fs_entry.fs_type == "file"
+                        MiniFiles.go_in({})
+                        if is_at_file then
+                            MiniFiles.close()
+                        end
+                    end, { buffer = buf_id, desc = "Go in entry" })
+                    vim.keymap.set("n", "g.", files_set_cwd, { buffer = buf_id, desc = "Set CWD" })
+                    vim.keymap.set("n", "gh", toggle_dotfiles, { buffer = buf_id, desc = "Toggel dotfiles" })
+                    vim.keymap.set("n", "gY", yank_full_path, { buffer = buf_id, desc = "Yank full path" })
+                    vim.keymap.set("n", "gy", yank_relative_path, { buffer = buf_id, desc = "Yank relative path" })
+                end,
+            })
+
+            MiniFiles.setup({
+                content = {
+                    filter = filter_hide,
+                },
+                mappings = {
+                    close = "q",
+                    go_in_plus = "l",
+                    go_out = "h",
+                    go_out_plus = "",
+                    reset = "<bs>",
+                    reveal_cwd = "@",
+                    show_help = "g?",
+                    synchronize = "<c-s>",
+                    trim_left = "<",
+                    trim_right = ">",
+                },
+                windows = {
+                    preview = true,
+                    width_focus = 25,
+                    width_preview = 30,
+                    width_nofocus = 20,
+                },
+            })
+
+            local function dynamic_open(path)
+                MiniFiles.open(
+                    path,
+                    true,
+                    { windows = { width_preview = 30 + math.max(0, math.min(50, vim.o.columns - 120)) } }
+                )
+            end
+
+            vim.keymap.set("n", "<leader>e", function()
+                if not MiniFiles.close() then
+                    dynamic_open(".")
+                end
+            end, { desc = "Open file browser" })
+            vim.keymap.set("n", "-", function()
+                dynamic_open(vim.api.nvim_buf_get_name(0))
+                MiniFiles.reveal_cwd()
+            end, { desc = "Open file browser" })
         end,
     },
 }
