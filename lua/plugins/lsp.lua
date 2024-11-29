@@ -34,7 +34,7 @@ return {
                                     filetypes = { "c", "cpp", "cc", "hpp", "h" },
                                     extra_args = {
                                         "--style",
-                                        "{BasedOnStyle: gnu, IndentWidth: 4, BreakBeforeBraces: Allman}",
+                                        "{BasedOnStyle: llvm, IndentWidth: 4}",
                                     },
                                 }))
                             end,
