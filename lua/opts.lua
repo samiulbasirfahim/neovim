@@ -9,6 +9,7 @@ vim.o.conceallevel = 0 -- For markdown like elements
 vim.o.title = false
 vim.o.showmode = false
 -- vim.o.showtabline = 2
+vim.o.showtabline = 2
 
 vim.o.splitbelow = true
 vim.o.splitright = true

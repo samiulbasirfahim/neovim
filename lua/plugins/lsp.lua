@@ -23,7 +23,7 @@ return {
                     })
                     local mason = require("mason-null-ls")
                     require("mason-null-ls").setup({
-                        ensure_installed = { "stylua", "clang-format", "shfmt" },
+                        ensure_installed = { "stylua", "clang-format", "shfmt", "prettierd" },
                         automatic_installation = false,
 
                         handlers = {
@@ -34,7 +34,7 @@ return {
                                     filetypes = { "c", "cpp", "cc", "hpp", "h" },
                                     extra_args = {
                                         "--style",
-                                        "{BasedOnStyle: llvm, IndentWidth: 4}",
+                                        "{BasedOnStyle: mozilla, IndentWidth: 4}",
                                     },
                                 }))
                             end,
@@ -61,7 +61,6 @@ return {
                     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
                 end
                 if vim.fn.has("nvim-0.10") == 1 then
-                    print("Connected to: " .. client.name)
                     vim.lsp.inlay_hint.enable()
                 end
             end
@@ -78,6 +77,8 @@ return {
                     "rust_analyzer",
                     "bashls",
                     "bashls",
+                    "ts_ls",
+                    "tailwindcss",
                 },
             })
 

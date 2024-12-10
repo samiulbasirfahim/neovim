@@ -18,21 +18,6 @@ return {
                 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
             end,
         },
-        {
-            "rose-pine/neovim",
-            name = "rose-pine",
-            config = function()
-                require("rose-pine").setup({
-                    variant = "moon",
-                    styles = {
-                        bold = false,
-                        italic = true,
-                        transparency = true,
-                    },
-                })
-                -- vim.cmd("colorscheme rose-pine")
-            end,
-        },
     },
     ---@type LazyPluginSpec
     {

@@ -25,7 +25,7 @@ return {
                     lookahead = true,
                     keymaps = {
                         ["a="] = "@assignment.outer",
-                        ["l="] = "@assignment.lhs",
+                        ["t="] = "@assignment.lhs",
                         ["r="] = "@assignment.rhs",
                         ["aw"] = "@word.outer",
                         ["ap"] = "@parameter.outer",
