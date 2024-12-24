@@ -12,5 +12,5 @@ map("i", "<C-k>", "<Up>")
 map("i", "<C-l>", "<Right>")
 
 map("n", "<C-s>", "<cmd>write<CR>")
-map("n", "<Tab>", "<cmd>bnext<CR>")
-map("n", "<s-Tab>", "<cmd>bprev<CR>")
+-- map("n", "<Tab>", "<cmd>bnext<CR>")
+-- map("n", "<s-Tab>", "<cmd>bprev<CR>")

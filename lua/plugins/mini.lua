@@ -31,12 +31,13 @@ local function confirm_discard_changes(all_buffers)
 end
 
 return {
-    {
-        "echasnovski/mini.tabline",
-        config = function()
-            require("mini.tabline").setup()
-        end,
-    },
+    ---@type LazyPkgSpec
+    -- {
+    --     "echasnovski/mini.tabline",
+    --     config = function()
+    --         require("mini.tabline").setup()
+    --     end,
+    -- },
     {
         "echasnovski/mini.sessions",
         config = function()
@@ -90,7 +91,7 @@ return {
         "echasnovski/mini.bufremove",
         config = function()
             require("mini.bufremove").setup({})
-            vim.keymap.set("n", "<leader>x", function()
+            vim.keymap.set("n", "<leader>q", function()
                 if confirm_discard_changes(false) then
                     require("mini.bufremove").delete(0, true)
                 end

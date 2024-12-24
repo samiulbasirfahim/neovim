@@ -44,9 +44,9 @@ return {
                     typescript = "deno run",
                     rust = "cd $dir && cargo run",
                     c =
-                    "cd $dir && mkdir -p .bin && cd .bin && gcc --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+                    "cd $dir && mkdir -p .bin && cd .bin && clang --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
                     cpp =
-                    "cd $dir && mkdir -p .bin && cd .bin && g++ --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+                    "cd $dir && mkdir -p .bin && cd .bin && clang++ --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
                 },
                 project = {},
             })
@@ -89,7 +89,7 @@ return {
                         "$(FNOEXT)",
                     },
                 },
-                c = { exec = "gcc", args = { "-Wall", "-Wextra", "-O2", "../$(FNAME)", "-o", "$(FNOEXT)" } },
+                c = { exec = "clang", args = { "-Wall", "-Wextra", "-O2", "../$(FNAME)", "-o", "$(FNOEXT)" } },
             },
             run_command = {
                 c = { exec = "./$(FNOEXT)" },
@@ -230,24 +230,24 @@ return {
             require("colorizer").setup()
         end,
     },
-    {
-        "Bekaboo/dropbar.nvim",
-        name = "dropbar",
-        event = { "BufReadPost", "BufNewFile" },
-        config = function()
-            require(".utility").map({
-                {
-                    key = "<leader>p",
-                    action = function()
-                        require("dropbar.api").pick(vim.v.count ~= 0 and vim.v.count)
-                    end,
-                    mode = "n",
-                    desc = "Toggle dropdown menu",
-                },
-            })
-            require("dropbar").setup({
-                require("dropbar").setup({}),
-            })
-        end,
-    },
+    -- {
+    --     "Bekaboo/dropbar.nvim",
+    --     name = "dropbar",
+    --     event = { "BufReadPost", "BufNewFile" },
+    --     config = function()
+    --         require(".utility").map({
+    --             {
+    --                 key = "<leader>p",
+    --                 action = function()
+    --                     require("dropbar.api").pick(vim.v.count ~= 0 and vim.v.count)
+    --                 end,
+    --                 mode = "n",
+    --                 desc = "Toggle dropdown menu",
+    --             },
+    --         })
+    --         require("dropbar").setup({
+    --             require("dropbar").setup({}),
+    --         })
+    --     end,
+    -- },
 }

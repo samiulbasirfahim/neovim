@@ -18,12 +18,15 @@ return {
 
                     require("null-ls").setup({
                         sources = {
-                            null_ls.builtins.diagnostics.cppcheck,
+                            -- null_ls.builtins.diagnostics.cppcheck,
                         },
                     })
                     local mason = require("mason-null-ls")
                     require("mason-null-ls").setup({
-                        ensure_installed = { "stylua", "clang-format", "shfmt", "prettierd" },
+                        ensure_installed = { "stylua", "clang-format",
+                            "shfmt",
+                            -- "prettierd"
+                        },
                         automatic_installation = false,
 
                         handlers = {
@@ -34,7 +37,7 @@ return {
                                     filetypes = { "c", "cpp", "cc", "hpp", "h" },
                                     extra_args = {
                                         "--style",
-                                        "{BasedOnStyle: mozilla, IndentWidth: 4}",
+                                        "{BasedOnStyle: llvm, IndentWidth: 4}",
                                     },
                                 }))
                             end,
@@ -75,10 +78,9 @@ return {
                     "lua_ls",
                     "clangd",
                     "rust_analyzer",
-                    "bashls",
-                    "bashls",
-                    "ts_ls",
-                    "tailwindcss",
+                    -- "bashls",
+                    -- "ts_ls",
+                    -- "tailwindcss",
                 },
             })
 

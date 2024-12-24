@@ -12,6 +12,13 @@ return {
                             heading = {
                                 icons = { "󰉫 ", "󰉬 ", "󰉭 ", "󰉮 ", "󰉯 ", "󰉰 " },
                             },
+                            code_block = {
+                                conceal = true,
+                                content_only = true,
+                                width = "content",
+                                highlight = "CursorLine",
+                                insert_enabled = true,
+                            },
                             todo = {
                                 undone = {
                                     icon = "X",
