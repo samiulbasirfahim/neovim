@@ -194,24 +194,6 @@ return {
         keys = { { "<leader>g", "<cmd>Lazygit<cr>", desc = "Git" } },
     },
     {
-        "willothy/flatten.nvim",
-        config = function()
-            require("flatten").setup({
-                window = { open = "smart" },
-                callbacks = {
-                    pre_open = vim.schedule_wrap(function()
-                        require("lazygit").hide()
-                    end),
-                    block_end = vim.schedule_wrap(function()
-                        require("lazygit").show()
-                    end),
-                },
-            })
-        end,
-        lazy = false,
-        priority = 1001,
-    },
-    {
         "IogaMaster/neocord",
         event = "VeryLazy",
         config = function()

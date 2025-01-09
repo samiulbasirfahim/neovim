@@ -11,6 +11,16 @@ map("i", "<C-j>", "<Down>")
 map("i", "<C-k>", "<Up>")
 map("i", "<C-l>", "<Right>")
 
+map("n", "<C-h>", "<C-w>h")
+map("n", "<C-j>", "<C-w>j")
+map("n", "<C-k>", "<C-w>k")
+map("n", "<C-l>", "<C-w>l")
+
+map("i", "<C-h>", "<Left>")
+map("i", "<C-j>", "<Down>")
+map("i", "<C-k>", "<Up>")
+map("i", "<C-l>", "<Right>")
+
 map("n", "<C-s>", "<cmd>write<CR>")
--- map("n", "<Tab>", "<cmd>bnext<CR>")
--- map("n", "<s-Tab>", "<cmd>bprev<CR>")
+map("n", "<Tab>", "<cmd>bnext<CR>")
+map("n", "<s-Tab>", "<cmd>bprev<CR>")

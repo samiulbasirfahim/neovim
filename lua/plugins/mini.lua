@@ -32,12 +32,12 @@ end
 
 return {
     ---@type LazyPkgSpec
-    -- {
-    --     "echasnovski/mini.tabline",
-    --     config = function()
-    --         require("mini.tabline").setup()
-    --     end,
-    -- },
+    {
+        "echasnovski/mini.tabline",
+        config = function()
+            require("mini.tabline").setup()
+        end,
+    },
     {
         "echasnovski/mini.sessions",
         config = function()

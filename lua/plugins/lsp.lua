@@ -19,11 +19,18 @@ return {
                     require("null-ls").setup({
                         sources = {
                             -- null_ls.builtins.diagnostics.cppcheck,
+null_ls.builtins.formatting.clang_format.with({
+                                    filetypes = { "c", "cpp", "cc", "hpp", "h" },
+                                    extra_args = {
+                                        "--style",
+                                        "{BasedOnStyle: llvm, IndentWidth: 4}",
+                                    },
+                                })
                         },
                     })
                     local mason = require("mason-null-ls")
                     require("mason-null-ls").setup({
-                        ensure_installed = { "stylua", "clang-format",
+                        ensure_installed = { "stylua", 
                             "shfmt",
                             -- "prettierd"
                         },
@@ -71,16 +78,19 @@ return {
             M.capabilities = vim.lsp.protocol.make_client_capabilities()
             M.capabilities = require("cmp_nvim_lsp").default_capabilities(M.capabilities)
 
+            require("lspconfig").clangd.setup(
+            { 
+                on_attach = M.on_attach, 
+                capabilities = M.capabilities,
+        }
+            )
+
             require("mason").setup({})
             require("mason-lspconfig").setup({
                 automatic_installation = true,
                 ensure_installed = {
                     "lua_ls",
-                    "clangd",
                     "rust_analyzer",
-                    -- "bashls",
-                    -- "ts_ls",
-                    -- "tailwindcss",
                 },
             })
 
@@ -110,8 +120,8 @@ return {
                 },
             })
 
-            -- local signs = { Error = "✘", Warn = "󱡃", Hint = "󱐮", Info = "󱓔" }
-            local signs = { Error = "✘", Warn = "󱡃", Hint = ">>", Info = ">>" }
+            local signs = { Error = "✘", Warn = "󱡃", Hint = "󱐮", Info = "󱓔" }
+            -- local signs = { Error = "✘", Warn = "󱡃", Hint = ">>", Info = ">>" }
 
             for type, icon in pairs(signs) do
                 local hl = "DiagnosticSign" .. type
