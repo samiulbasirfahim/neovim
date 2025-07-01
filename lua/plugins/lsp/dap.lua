@@ -50,7 +50,7 @@ return {
             dapui.close({})
         end
 
-        require(".utility").map({
+        require("core.utility").map({
             {
                 key = "<leader>dc",
                 action = function()

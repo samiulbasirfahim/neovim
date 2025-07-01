@@ -164,7 +164,7 @@ return {
         opts = {
             lang = "cpp",
             storage = {
-                home = "$HOME/dev/leetcode",
+                home = "$HOME/dev/cp/leetcode",
             },
             description = {
                 width = "50%",
@@ -210,6 +210,21 @@ return {
         "norcalli/nvim-colorizer.lua",
         config = function()
             require("colorizer").setup()
+        end,
+    },
+    {
+        "alexghergh/nvim-tmux-navigation",
+        config = function()
+            require("nvim-tmux-navigation").setup({
+                disable_when_zoomed = true, -- defaults to false
+                keybindings = {
+                    left = "<C-h>",
+                    down = "<C-j>",
+                    up = "<C-k>",
+                    right = "<C-l>",
+                    next = "<C-Space>",
+                },
+            })
         end,
     },
     -- {

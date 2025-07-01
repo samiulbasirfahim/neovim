@@ -37,7 +37,7 @@ vim.o.virtualedit = "block"
 vim.o.inccommand = "split"
 
 vim.o.termguicolors = true
-vim.o.laststatus = 0
+-- vim.o.laststatus = 0
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "

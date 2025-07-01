@@ -30,6 +30,7 @@ local function confirm_discard_changes(all_buffers)
     return true
 end
 
+
 return {
     ---@type LazyPkgSpec
     {
@@ -96,6 +97,20 @@ return {
                     require("mini.bufremove").delete(0, true)
                 end
             end, { desc = "Close buffer" })
+
+
+            vim.keymap.set("n", "<leader>Q", function()
+                for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                    if vim.api.nvim_buf_is_valid(bufnr) then
+                        if vim.api.nvim_get_option_value("modified", { buf = bufnr }) then
+                            if not confirm_discard_changes(false) then
+                                return
+                            end
+                        end
+                        require("mini.bufremove").delete(bufnr, true)
+                    end
+                end
+            end, { desc = "Close all buffer" })
         end,
     },
     {
@@ -111,7 +126,6 @@ return {
         config = function()
             local minipick = require("mini.pick")
             local miniextra = require("mini.extra")
-            -- local minivisits = require("mini.visits")
             local builtin = minipick.builtin
 
             vim.ui.select = minipick.ui_select
@@ -127,12 +141,29 @@ return {
                 },
             })
 
-            require(".utility").map({
+            require("core.utility").map({
                 {
                     mode = "n",
                     key = "<leader>ff",
                     action = function()
-                        builtin.files({ tool = "rg" })
+                        minipick.builtin.cli({
+                            command = {
+                                "rg",
+                                "--files",
+                                "-g",
+                                "!/**/.svelte",
+                                "-g",
+                                "!/**/.git",
+                                "-g",
+                                "!/**/node_modules",
+                                "-g",
+                                "!/vendor",
+                                "-g",
+                                "!/public/build",
+                                "-g",
+                                "!*.{jpg,jpeg,png,gif,bmp,tiff,mov,mp4,avi,mpeg,webm,pdf,doc,docx,mp3,cache,gitkeep,gitignore}",
+                            },
+                        })
                     end,
                     desc = "Find [f]iles",
                 },
