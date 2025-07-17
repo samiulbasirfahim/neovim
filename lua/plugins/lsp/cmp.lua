@@ -31,7 +31,7 @@ return {
             event = "InsertEnter",
             dependencies = {
                 "saadparwaiz1/cmp_luasnip",
-                -- "rafamadriz/friendly-snippets",
+                "rafamadriz/friendly-snippets",
             },
             config = function()
                 local luasnip = require("luasnip")
@@ -41,7 +41,7 @@ return {
                 })
 
                 require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./snippets" } })
-                -- require("luasnip.loaders.from_vscode").lazy_load()
+                require("luasnip.loaders.from_vscode").lazy_load()
                 vim.api.nvim_create_autocmd("InsertLeave", {
                     callback = function()
                         if
