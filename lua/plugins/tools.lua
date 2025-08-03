@@ -41,7 +41,7 @@ return {
                 startinsert = true,
                 filetype = {
                     python = "python3 -u",
-                    typescript = "deno run",
+                    typescript = "bun",
                     rust = "cd $dir && cargo run",
                     c =
                     "cd $dir && mkdir -p .bin && cd .bin && clang --debug ../$fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
