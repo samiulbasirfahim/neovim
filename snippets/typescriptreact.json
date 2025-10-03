@@ -1,0 +1,1 @@
+{"rncf":{"body":["import { View } from \"react-native\";","","export default function Screen () {","    return <View>$1</View>","}"],"prefix":"rncf"}}

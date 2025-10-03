@@ -1,4 +1,4 @@
---@type LazyPluginSpe
+--@type LazyPluginSpec
 return {
     "williamboman/mason-lspconfig.nvim",
     dependencies = {
@@ -15,22 +15,21 @@ return {
         },
     },
     config = function()
-        local lspconfig = require("lspconfig")
         local M = {}
+
         M.on_attach = function(client, bufnr)
             if client.name == "svelte" then
                 vim.api.nvim_create_autocmd("BufWritePost", {
                     pattern = { "*.js", "*.ts" },
                     group = vim.api.nvim_create_augroup("svelte_ondidchangetsorjsfile", { clear = true }),
                     callback = function(ctx)
-                        -- Here use ctx.match instead of ctx.file
                         client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
                     end,
                 })
             end
 
             if client.name == "clangd" then
-                client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
+                client.server_capabilities.documentFormattingProvider = false
             end
 
             require("inlay-hints").on_attach(client, bufnr)
@@ -38,10 +37,160 @@ return {
                 vim.lsp.inlay_hint.enable()
             end
         end
+
         M.capabilities = vim.lsp.protocol.make_client_capabilities()
         M.capabilities = require("cmp_nvim_lsp").default_capabilities(M.capabilities)
-        require("mason").setup({})
 
+        -- Configure LSP servers using vim.lsp.config()
+
+        -- TypeScript/JavaScript
+        vim.lsp.config("ts_ls", {
+            capabilities = M.capabilities,
+            on_attach = M.on_attach,
+            settings = {
+                typescript = {
+                    inlayHints = {
+                        includeInlayParameterNameHints = "all",
+                        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                        includeInlayVariableTypeHints = true,
+                        includeInlayFunctionParameterTypeHints = true,
+                        includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+                        includeInlayPropertyDeclarationTypeHints = true,
+                        includeInlayFunctionLikeReturnTypeHints = true,
+                        includeInlayEnumMemberValueHints = true,
+                    },
+                },
+                javascript = {
+                    inlayHints = {
+                        includeInlayParameterNameHints = "all",
+                        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                        includeInlayVariableTypeHints = true,
+                        includeInlayFunctionParameterTypeHints = true,
+                        includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+                        includeInlayPropertyDeclarationTypeHints = true,
+                        includeInlayFunctionLikeReturnTypeHints = true,
+                        includeInlayEnumMemberValueHints = true,
+                    },
+                },
+            },
+        })
+
+        -- Clangd
+        vim.lsp.config("clangd", {
+            capabilities = M.capabilities,
+            on_attach = M.on_attach,
+            settings = {
+                clangd = {
+                    InlayHints = {
+                        Designators = true,
+                        Enabled = true,
+                        ParameterNames = true,
+                        DeducedTypes = true,
+                    },
+                    fallbackFlags = { "-std=c++20" },
+                },
+            },
+        })
+
+        -- Svelte
+        vim.lsp.config("svelte", {
+            capabilities = M.capabilities,
+            on_attach = M.on_attach,
+            settings = {
+                typescript = {
+                    inlayHints = {
+                        parameterNames = { enabled = "all" },
+                        parameterTypes = { enabled = true },
+                        variableTypes = { enabled = true },
+                        propertyDeclarationTypes = { enabled = true },
+                        functionLikeReturnTypes = { enabled = true },
+                        enumMemberValues = { enabled = true },
+                    },
+                },
+            },
+        })
+
+        -- Rust Analyzer
+        vim.lsp.config("rust_analyzer", {
+            capabilities = M.capabilities,
+            on_attach = M.on_attach,
+            settings = {
+                ["rust-analyzer"] = {
+                    imports = {
+                        granularity = {
+                            group = "module",
+                        },
+                        prefix = "self",
+                    },
+                    cargo = {
+                        buildScripts = {
+                            enable = true,
+                        },
+                    },
+                    procMacro = {
+                        enable = true,
+                    },
+                    inlayHints = {
+                        bindingModeHints = {
+                            enable = false,
+                        },
+                        chainingHints = {
+                            enable = true,
+                        },
+                        closingBraceHints = {
+                            enable = true,
+                            minLines = 25,
+                        },
+                        closureReturnTypeHints = {
+                            enable = "never",
+                        },
+                        lifetimeElisionHints = {
+                            enable = "never",
+                            useParameterNames = false,
+                        },
+                        maxLength = 25,
+                        parameterHints = {
+                            enable = true,
+                        },
+                        reborrowHints = {
+                            enable = "never",
+                        },
+                        renderColons = true,
+                        typeHints = {
+                            enable = true,
+                            hideClosureInitialization = false,
+                            hideNamedConstructor = false,
+                        },
+                    },
+                },
+            },
+        })
+
+        -- Lua LS
+        vim.lsp.config("lua_ls", {
+            capabilities = M.capabilities,
+            on_attach = M.on_attach,
+            settings = {
+                Lua = {
+                    diagnostics = {
+                        globals = { "vim" },
+                    },
+                    hint = {
+                        enable = true,
+                    },
+                    workspace = {
+                        library = {
+                            [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+                            [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+                            [vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy"] = true,
+                        },
+                    },
+                },
+            },
+        })
+
+        -- Setup Mason and mason-lspconfig
+        require("mason").setup({})
         require("mason-lspconfig").setup({
             automatic_installation = true,
             ensure_installed = {
@@ -49,157 +198,8 @@ return {
                 "clangd",
             },
         })
-        require("mason-lspconfig").setup_handlers({
-            function(server)
-                lspconfig[server].setup({
-                    on_attach = M.on_attach,
-                    capabilities = M.capabilities,
-                })
-            end,
-            ["ts_ls"] = function()
-                lspconfig.ts_ls.setup({
-                    settings = {
-                        typescript = {
-                            inlayHints = {
-                                includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
-                                includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                                includeInlayVariableTypeHints = true,
-                                includeInlayFunctionParameterTypeHints = true,
-                                includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-                                includeInlayPropertyDeclarationTypeHints = true,
-                                includeInlayFunctionLikeReturnTypeHints = true,
-                                includeInlayEnumMemberValueHints = true,
-                            },
-                        },
-                        javascript = {
-                            inlayHints = {
-                                includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
-                                includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                                includeInlayVariableTypeHints = true,
 
-                                includeInlayFunctionParameterTypeHints = true,
-                                includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-                                includeInlayPropertyDeclarationTypeHints = true,
-                                includeInlayFunctionLikeReturnTypeHints = true,
-                                includeInlayEnumMemberValueHints = true,
-                            },
-                        },
-                    },
-                })
-            end,
-            ["clangd"] = function()
-                lspconfig.clangd.setup({
-                    settings = {
-                        clangd = {
-                            InlayHints = {
-                                Designators = true,
-                                Enabled = true,
-                                ParameterNames = true,
-                                DeducedTypes = true,
-                            },
-                            fallbackFlags = { "-std=c++20" },
-                        },
-                    },
-                })
-            end,
-            ["svelte"] = function()
-                lspconfig.svelte.setup({
-                    settings = {
-                        typescript = {
-                            inlayHints = {
-                                parameterNames = { enabled = "all" },
-                                parameterTypes = { enabled = true },
-                                variableTypes = { enabled = true },
-                                propertyDeclarationTypes = { enabled = true },
-                                functionLikeReturnTypes = { enabled = true },
-                                enumMemberValues = { enabled = true },
-                            },
-                        },
-                    },
-                })
-            end,
-            ["rust_analyzer"] = function()
-                lspconfig.rust_analyzer.setup({
-                    on_attach = M.on_attach,
-                    capabilities = M.capabilities,
-                    settings = {
-                        ["rust-analyzer"] = {
-
-                            imports = {
-                                granularity = {
-                                    group = "module",
-                                },
-                                prefix = "self",
-                            },
-                            cargo = {
-                                buildScripts = {
-                                    enable = true,
-                                },
-                            },
-                            procMacro = {
-                                enable = true,
-                            },
-                            inlayHints = {
-                                bindingModeHints = {
-                                    enable = false,
-                                },
-                                chainingHints = {
-                                    enable = true,
-                                },
-                                closingBraceHints = {
-                                    enable = true,
-                                    minLines = 25,
-                                },
-                                closureReturnTypeHints = {
-                                    enable = "never",
-                                },
-                                lifetimeElisionHints = {
-                                    enable = "never",
-                                    useParameterNames = false,
-                                },
-                                maxLength = 25,
-                                parameterHints = {
-                                    enable = true,
-                                },
-                                reborrowHints = {
-                                    enable = "never",
-                                },
-                                renderColons = true,
-                                typeHints = {
-                                    enable = true,
-                                    hideClosureInitialization = false,
-                                    hideNamedConstructor = false,
-                                },
-                            },
-                        },
-                    },
-                })
-            end,
-            ["lua_ls"] = function()
-                lspconfig.lua_ls.setup({
-                    settings = {
-                        Lua = {
-                            diagnostics = {
-                                globals = { "vim" },
-                            },
-                            hint = {
-                                enable = true,
-                            },
-                            workspace = {
-                                library = {
-                                    [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-                                    [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-                                    [vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy"] = true,
-                                },
-                            },
-                        },
-                    },
-                })
-            end,
-        })
-
-        local signs = { Error = "✘", Warn = "", Hint = "", Info = "" }
-        -- local signs = { Error = "✘", Warn = "󱡃", Hint = ">>", Info = ">>" }
+        local signs = { Error = "✘", Warn = "", Hint = "", Info = "" }
 
         for type, icon in pairs(signs) do
             local hl = "DiagnosticSign" .. type
@@ -243,7 +243,7 @@ return {
                     vim.lsp.buf.type_definition()
                 end,
                 mode = "n",
-                desc = "[T]ype defination",
+                desc = "[T]ype definition",
             },
             {
                 key = "<leader>la",
@@ -289,7 +289,7 @@ return {
                 key = "<leader>li",
                 action = ":lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>",
                 mode = "n",
-                desc = "Disable [i]nlaay hints",
+                desc = "Toggle [i]nlay hints",
             },
             {
                 key = "<leader>ln",
