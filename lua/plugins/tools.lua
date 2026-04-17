@@ -23,6 +23,7 @@ return {
 			vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
 		end,
 	},
+
 	{
 		"CRAG666/code_runner.nvim",
 		event = "BufReadPre",
@@ -50,9 +51,11 @@ return {
 			})
 		end,
 	},
+
 	{
 		"mg979/vim-visual-multi",
 	},
+
 	{
 		"xeluxee/competitest.nvim",
 		dependencies = { "muniftanjim/nui.nvim", lazy = true },
