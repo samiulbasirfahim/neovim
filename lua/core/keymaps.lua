@@ -5,6 +5,7 @@ local function map(mode, keys, action, desc)
 end
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set('t', '<C-x>', [[<C-\><C-n>]], { desc = "Escape terminal mode" })
 
 map("i", "<C-h>", "<Left>")
 map("i", "<C-j>", "<Down>")

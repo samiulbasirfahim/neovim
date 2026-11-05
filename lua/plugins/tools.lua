@@ -66,7 +66,7 @@ return {
 			{ "<leader>cd", "<CMD>CompetiTest delete_testcase<CR>", options, desc = "CP: delete testcases" },
 			{ "<leader>cr", "<CMD>CompetiTest run<CR>", options, desc = "CP: run testcases" },
 			{ "<leader>cp", "<CMD>CompetiTest receive problem<CR>", options, desc = "CP: download testcases" },
-			{ "<leader>cc", "<CMD>CompetiTest receive contest<CR>", options, desc = "CP: download contest" },
+			{ "<leader>cD", "<CMD>CompetiTest receive contest<CR>", options, desc = "CP: download contest" },
 		},
 		opts = {
 			received_files_extension = "cpp",
@@ -245,6 +245,65 @@ return {
 			vim.keymap.set("n", "<Leader>;", dropbar_api.pick, { desc = "Pick symbols in winbar" })
 			vim.keymap.set("n", "[;", dropbar_api.goto_context_start, { desc = "Go to start of current context" })
 			vim.keymap.set("n", "];", dropbar_api.select_next_context, { desc = "Select next context" })
+		end,
+	},
+	{
+		"saecki/crates.nvim",
+		tag = "stable",
+		config = function()
+			require("crates").setup({
+				lsp = {
+					enabled = true,
+					on_attach = function(client, bufnr)
+						-- the same on_attach function as for your other language servers
+						-- can be ommited if you're using the `LspAttach` autocmd
+					end,
+					actions = true,
+					completion = true,
+					hover = true,
+				},
+
+				null_ls = {
+					enabled = true,
+					name = "crates.nvim",
+				},
+
+				completion = {
+					crates = {
+						enabled = true,
+						max_results = 8,
+						min_chars = 3,
+					},
+				},
+			})
+
+			local crates = require("crates")
+			local function map(mode, lhs, rhs, desc)
+				vim.keymap.set(mode, lhs, rhs, { silent = true, desc = desc })
+			end
+
+			map("n", "<leader>cct", crates.toggle, "Crates: toggle UI")
+			map("n", "<leader>ccr", crates.reload, "Crates: reload")
+
+			map("n", "<leader>ccv", crates.show_versions_popup, "Crates: show versions")
+			map("n", "<leader>ccf", crates.show_features_popup, "Crates: show features")
+			map("n", "<leader>ccd", crates.show_dependencies_popup, "Crates: show dependencies")
+
+			map("n", "<leader>ccu", crates.update_crate, "Crates: update crate")
+			map("v", "<leader>ccu", crates.update_crates, "Crates: update selected crates")
+			map("n", "<leader>cca", crates.update_all_crates, "Crates: update all crates")
+			map("n", "<leader>ccU", crates.upgrade_crate, "Crates: upgrade crate")
+			map("v", "<leader>ccU", crates.upgrade_crates, "Crates: upgrade selected crates")
+			map("n", "<leader>ccA", crates.upgrade_all_crates, "Crates: upgrade all crates")
+
+			map("n", "<leader>ccx", crates.expand_plain_crate_to_inline_table, "Crates: expand to inline table")
+			map("n", "<leader>ccX", crates.extract_crate_into_table, "Crates: extract into table")
+
+			map("n", "<leader>ccH", crates.open_homepage, "Crates: open homepage")
+			map("n", "<leader>ccR", crates.open_repository, "Crates: open repository")
+			map("n", "<leader>ccD", crates.open_documentation, "Crates: open documentation")
+			map("n", "<leader>ccC", crates.open_crates_io, "Crates: open crates.io page")
+			map("n", "<leader>ccL", crates.open_lib_rs, "Crates: open lib.rs page")
 		end,
 	},
 }

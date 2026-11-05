@@ -87,6 +87,7 @@ return {
 				{ name = "copilot" },
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" },
+				{ name = "crates" },
 			}, {
 				{ name = "path" },
 				{ name = "buffer" },
